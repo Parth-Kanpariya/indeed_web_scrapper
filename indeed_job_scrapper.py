@@ -1,13 +1,10 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[2]:
-
-
 from re import S
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+import smtplib
+from email.mime.text import MIMEText as text
+
 
 joblist=[]
 
@@ -18,11 +15,19 @@ def extract(job,location,page):
     soup = BeautifulSoup(r.content, 'html.parser')
     return soup
 
+
+
+
 def transform(soup):
+    
     divs = soup.find_all('div', class_='job_seen_beacon')
+    
     for item in divs:
-        title = item.find('a').text
+        
+        title = item.find('a').text   
         company = item.find('span',class_='companyName').text
+               
+    
         l=item.find('div',{'class':'job-snippet'}).findChildren()
         summary=" "
         for x in l:
@@ -39,28 +44,52 @@ def transform(soup):
             'salary':summary,
             'type':salary
         } 
-
-        joblist.append(job)
         
+        joblist.append(job)
         
         
     return
 
 
 
+#extracting 
 for i in range(0,40,10):
     c=extract("python","surat",i)
     transform(c)
     
+    
+    
+
+message="Job openings:- \n"
+
+
+for i in joblist:
+    if i['title'] == "Python Developer":
+        message+="\n"+i['title']+" at "+i['company']
+      
+    
+msg = text(message)
+msg['Subject'] = 'Indeed Job Opening For Python Developer'
+msg['From'] = "parthkanpariya4@gmail.com"
+msg['To'] = "parthkanpariya4@gmail.com"    
+
+
+    
+    
+ #email content   
+smtp_object = smtplib.SMTP("smtp.gmail.com", 587)
+
+smtp_object.ehlo()
+smtp_object.starttls()
+smtp_object.login("parthkanpariya4@gmail.com","bcgrwoyyaexvxspf")
+
+smtp_object.sendmail("parthkanpariya4@gmail.com","parthkanpariya4@gmail.com",msg.as_string())
+smtp_object.quit()
+   
+#convert to csv from panda
 df=pd.DataFrame(joblist)
 print(df.head())
 df.to_csv('jobs.csv')
-
-
-
-
-
-# In[ ]:
 
 
 
