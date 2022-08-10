@@ -70,8 +70,8 @@ for i in joblist:
     
 msg = text(message)
 msg['Subject'] = 'Indeed Job Opening For Python Developer'
-msg['From'] = "parthkanpariya4@gmail.com"
-msg['To'] = "parthkanpariya4@gmail.com"    
+msg['From'] = "Sender Email"
+msg['To'] = "Reciver Email"    
 
 
     
@@ -81,9 +81,9 @@ smtp_object = smtplib.SMTP("smtp.gmail.com", 587)
 
 smtp_object.ehlo()
 smtp_object.starttls()
-smtp_object.login("parthkanpariya4@gmail.com","bcgrwoyyaexvxspf")
+smtp_object.login("your email","password")
 
-smtp_object.sendmail("parthkanpariya4@gmail.com","parthkanpariya4@gmail.com",msg.as_string())
+smtp_object.sendmail("Sender Email","Reciver Email",msg.as_string())
 smtp_object.quit()
    
 #convert to csv from panda
